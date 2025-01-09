@@ -35,6 +35,8 @@ public class ChatClient extends AbstractClient
   public static Subscriber s1 = new Subscriber(0, 0, null, null, null);
   public static Librarian l1 = new Librarian(0, null);
   public static List<Book> bookList = new ArrayList<>(); // List to hold books
+  public static List<String[][]> br = new ArrayList<>(); 
+  public static String[] BorrowedBookInfo ;
   
   public static boolean awaitResponse = false;
 
@@ -64,69 +66,135 @@ public class ChatClient extends AbstractClient
    */
   public void handleMessageFromServer(Object msg) 
   {
-    System.out.println("--> handleMessageFromServer");
-    System.out.println(msg);
-    
- // Handle the message based on its type
-    if (((String) msg).startsWith("subscriber_id:")) {
-        // Process subscriber data
-    	l1.setLibrarian_id(-1);
-        processSubscriberData((String) msg);
-    } else if (((String) msg).startsWith("librarian_id:")) {
-        // Process librarian data
-    	s1.setSubscriber_id(-1);
-        processLibrarianData((String) msg);
-    } else if (msg.equals("Subscriber ID does not exist.")) {
-        // Handle case where subscriber doesn't exist
-    	l1.setLibrarian_id(-1);
-        s1.setSubscriber_id(-1);
-    }else if (msg.equals("Librarian ID does not exist.")) {
-            // Handle case where subscriber doesn't exist
-    	l1.setLibrarian_id(-1);
-        s1.setSubscriber_id(-1);
-    }
-     else if (msg.equals("ID does not exist.")) {
-             // Handle case where subscriber doesn't exist
-     	l1.setLibrarian_id(-1);
-        s1.setSubscriber_id(-1);
-    }
-    else if (((String) msg).startsWith("Could not connect to the server.")) {
-        ClientUI.isIPValid = false; // Turn on the flag for the IP controller.
-    } else if (((String) msg).startsWith("Client connected to IP: ")) {
-        ClientUI.isIPValid = true; // Turn off the flag when the IP is correct.
-    }else if (((String) msg).startsWith("returnedBookData:")) {
-        String data = ((String) msg).substring("returnedBookData:".length()); // Remove the indicator
-        
-        if (data.equals("NoBooksFound")) {
-            System.out.println("No books found in the database.");
-        } else if (data.startsWith("Error")) {
-            System.out.println("Error from server: " + data);
-        } else {
-            // Split the data into individual book strings
-            String[] bookStrings = data.split(";");
-            
-            // Parse each string into a Book object
-            bookList.clear(); // Clear the current list before adding new books
-            for (String bookData : bookStrings) {
-                String[] fields = bookData.split(","); // Split fields by comma
+	    System.out.println("--> handleMessageFromServer");
+	    if (!(msg instanceof String)) {
+	        System.out.println("Invalid message type received.");
+	        return;
+	    }
 
-                // Create a Book object from the fields
-                int id = Integer.parseInt(fields[0]);
-                String name = fields[1];
-                String subject = fields[2];
-                String description = fields[3];
+	    String response = (String) msg;
+	    System.out.println(response);
 
-                int availableCopies = Integer.parseInt(fields[4]);
-                String location = fields[5];
+	    // Dispatch handling based on message prefix
+	    if (response.startsWith("subscriber_id:")) {
+	        handleSubscriberData(response);
+	    } else if (response.startsWith("librarian_id:")) {
+	        handleLibrarianData(response);
+	    } else if (response.equals("Subscriber ID does not exist.") || response.equals("Librarian ID does not exist.") || response.equals("ID does not exist.")) {
+	        handleNonexistentID();
+	    } else if (response.startsWith("Could not connect to the server.")) {
+	        handleServerConnectionIssue(false);
+	    } else if (response.startsWith("Client connected to IP: ")) {
+	        handleServerConnectionIssue(true);
+	    } else if (response.startsWith("returnedBookData:")) {
+	        handleBookData(response.substring("returnedBookData:".length()));
+	    } else if (response.startsWith("BookInfo:")){
+	    	handleBookInfo(response.substring("BookInfo:".length()));
+	    } else if (response.startsWith("FetchedBorrowedBooks:")){
+	    	handleFetchedBorrowedBooks(response.substring("FetchedBorrowedBooks:".length()));
+	    }else {
+	    	handleUnknownResponse(response);
+	    }
+	}
+  private void handleBookInfo(String data) {
+	    try {
+	        if (data.equals("NoBooksFound")) {
+	            System.out.println("No books found in the database.");
+	            BorrowedBookInfo = null;
+	        } else if (data.startsWith("Error")) {
+	            System.out.println("Error from server: " + data);
+	            BorrowedBookInfo = null;
+	        } else {
+	            BorrowedBookInfo = data.split(",");
+	            if (BorrowedBookInfo.length < 6) {
+	                throw new IllegalArgumentException("Incomplete book data received.");
+	            }
+	          /*  System.out.println("Book ID: " + BorrowedBookInfo[0] + "\n" +
+	                    "Book Name: " + BorrowedBookInfo[1] + "\n" +
+	                    "Subject: " + BorrowedBookInfo[2] + "\n" +
+	                    "Description: " + BorrowedBookInfo[3] + "\n" +
+	                    "Available Copies: " + BorrowedBookInfo[4] + "\n" +
+	                    "Location on Shelf: "+ BorrowedBookInfo[5]);
+	          */
+	        }
+	    } catch (Exception e) {
+	        System.out.println("Error handling book info: " + e.getMessage());
+	        BorrowedBookInfo = null;
+	    }
+	}
 
-                bookList.add(new Book(id, name, description, subject, availableCopies, location));
-                
-            }
-        }
-    } else {
-        System.out.println("Unknown response from server: " + msg);
-    }
-  }
+	private void handleSubscriberData(String response) {
+	    l1.setLibrarian_id(-1); // Reset librarian data
+	    processSubscriberData(response);
+	}
+
+	private void handleLibrarianData(String response) {
+	    s1.setSubscriber_id(-1); // Reset subscriber data
+	    processLibrarianData(response);
+	}
+
+	private void handleNonexistentID() {
+	    l1.setLibrarian_id(-1);
+	    s1.setSubscriber_id(-1);
+	}
+	
+	private void handleFetchedBorrowedBooks(String data) {
+	    br.clear(); // Clear the existing list to avoid appending duplicate data
+
+	    // Split the input data by semicolon (;) to separate each request
+	    String[] requests = data.split(";");
+
+	    // Iterate over each request (which is now a string) and split it by comma (,) to get the fields
+	    for (String request : requests) {
+	        // Split each request into fields by comma
+	        String[] bookDetails = request.split(",");
+
+	        // Ensure the bookDetails array has the expected length (8 fields)
+	        if (bookDetails.length == 8) {
+	            br.add(new String[][]{bookDetails}); // Add the book details array to the br list
+	        } else {
+	            System.out.println("Invalid book data received: " + String.join(",", bookDetails));
+	        }
+	    }
+	}
+	private void handleServerConnectionIssue(boolean isConnected) {
+	    ClientUI.isIPValid = isConnected;
+	    String message = isConnected ? "Server connection successful." : "Failed to connect to the server.";
+	    System.out.println(message);
+	}
+
+	private void handleBookData(String data) {
+	    if (data.equals("NoBooksFound")) {
+	        System.out.println("No books found in the database.");
+	    } else if (data.startsWith("Error")) {
+	        System.out.println("Error from server: " + data);
+	    } else {
+	        parseBookData(data);
+	    }
+	}
+
+	private void handleUnknownResponse(String response) {
+	    System.out.println("Unknown response from server: " + response);
+	}
+
+	private void parseBookData(String data) {
+	    try {
+	        String[] bookStrings = data.split(";");
+	        bookList.clear(); // Clear existing book data
+	        for (String bookData : bookStrings) {
+	            String[] fields = bookData.split(",");
+	            int id = Integer.parseInt(fields[0]);
+	            String name = fields[1];
+	            String subject = fields[2];
+	            String description = fields[3];
+	            int availableCopies = Integer.parseInt(fields[4]);
+	            String location = fields[5];
+	            bookList.add(new Book(id, name, description, subject, availableCopies, location));
+	        }
+	    } catch (Exception e) {
+	        System.out.println("Error parsing book data: " + e.getMessage());
+	    }
+	}
   
   public void handleMessageFromClientUI(String message) {
         awaitResponse = true;

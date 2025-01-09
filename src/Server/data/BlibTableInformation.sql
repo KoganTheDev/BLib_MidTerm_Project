@@ -68,6 +68,34 @@ INSERT INTO `librarian` VALUES (11,'Timmy Turner'),(22,'Bob'),(33,'Other Bob');
 UNLOCK TABLES;
 
 --
+-- Table structure for table `requests`
+--
+
+DROP TABLE IF EXISTS `requests`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `requests` (
+  `requestType` varchar(45) DEFAULT NULL,
+  `requestedByID` varchar(45) DEFAULT NULL,
+  `requestedByName` varchar(45) DEFAULT NULL,
+  `bookName` varchar(45) DEFAULT NULL,
+  `bookId` varchar(45) DEFAULT NULL,
+  `borrowTime` varchar(45) DEFAULT NULL,
+  `returnTime` varchar(45) DEFAULT NULL,
+  `extendTime` varchar(45) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `requests`
+--
+
+LOCK TABLES `requests` WRITE;
+/*!40000 ALTER TABLE `requests` DISABLE KEYS */;
+/*!40000 ALTER TABLE `requests` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `subscriber`
 --
 
@@ -103,4 +131,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-01-07  4:05:06
+-- Dump completed on 2025-01-09  3:39:05
