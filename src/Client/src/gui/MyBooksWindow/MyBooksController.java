@@ -187,7 +187,8 @@ public class MyBooksController extends BaseController implements Initializable {
         public void extendButton(ActionEvent event, BorrowedBook selectedBook) {
         	ClientTimeDiffController timeDiffController = new ClientTimeDiffController();
         	LocalDateTime today = LocalDateTime.now();
-        	String newReturnDate;
+        	String newReturnDate;}
+        	/*
     		newReturnDate = timeDiffController.extendReturnDate(selectedBook.getReturnDate(), 14);
         	if(timeDiffController.hasEnoughTimeBeforeDeadline(today, selectedBook.getReturnDate(), 7)){
         		ClientUI.chat.accept("UpdateReturnDate:"+selectedBook.getBorrowId());
@@ -195,7 +196,7 @@ public class MyBooksController extends BaseController implements Initializable {
         	}
         	else 
         		showColoredLabelMessageOnGUI(extensionDynamicLabel, "Extension denied", "-fx-text-fill: red;");
-        }
+        }*/
 
     /**
      * Searches for books based on filters entered in the name, description, and subject fields.

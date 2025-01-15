@@ -568,7 +568,7 @@ public class ConnectToDb {
     public static void updateReturnDateAfterExtension(int borrowId, Connection con) {
         // SQL query to update the return date for a specific borrowed book
         String query = "UPDATE borrowed_books SET Return_Time = ? WHERE borrow_id = ?";
-
+/* FIX
         try (PreparedStatement preparedStatement = con.prepareStatement(query)) {
             // Set the query parameters
             preparedStatement.setString(1, newReturnDate); // New return date
@@ -584,7 +584,7 @@ public class ConnectToDb {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Failed to update the return date for Borrow ID: " + borrowId);
-        }
+        }*/
     }
 
 

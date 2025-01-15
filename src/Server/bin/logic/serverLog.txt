@@ -4,17 +4,14 @@ Client connected.
 Client IP:127.0.0.1
 Client Hostname: 127.0.0.1
 Connection Status: Connected
-Message received: IP:10.0.0.8 from 127.0.0.1 (127.0.0.1)
+Message received: IP:192.168.250.50 from 127.0.0.1 (127.0.0.1)
+Message received: GetBooks: from 127.0.0.1 (127.0.0.1)
+Received GetBooks request from client
+Message received: GetBooks: from 127.0.0.1 (127.0.0.1)
+Received GetBooks request from client
+Message received: GetBooks: from 127.0.0.1 (127.0.0.1)
+Received GetBooks request from client
+Message received: GetBooks: from 127.0.0.1 (127.0.0.1)
+Received GetBooks request from client
 Message received: Fetch:1 from 127.0.0.1 (127.0.0.1)
 Message received: GetBorrowedBooks:1 from 127.0.0.1 (127.0.0.1)
-Message received: Return Book: Subscriber ID is 1 Borrow info: 1 1984 Fiction 0 from 127.0.0.1 (127.0.0.1)
-Message received: GetBorrowedBooks:1 from 127.0.0.1 (127.0.0.1)
-Client connected.
-Client IP:127.0.0.1
-Client Hostname: 127.0.0.1
-Connection Status: Connected
-Message received: IP:10.0.0.8 from 127.0.0.1 (127.0.0.1)
-Message received: Fetch:2 from 127.0.0.1 (127.0.0.1)
-Message received: GetBorrowedBooks:2 from 127.0.0.1 (127.0.0.1)
-Message received: Return Book: Subscriber ID is 2 Borrow info: 2 1984 null 0 from 127.0.0.1 (127.0.0.1)
-Message received: GetBorrowedBooks:2 from 127.0.0.1 (127.0.0.1)
