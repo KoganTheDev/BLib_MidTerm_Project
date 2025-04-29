@@ -5,7 +5,7 @@
 ## 📝 **Overview**  
 **BLib** is a library management system designed to streamline library operations for Braude College. It simplifies book inventory management, user subscriptions, and services like book borrowing, returning, extensions, and reservations.  
 
-This system will be developed as a **Full Stack Application** using a **Client-Server Architecture** and focuses on efficiency, usability, and scalability for future web-based and mobile functionality.  
+This system is developed as a **Full Stack Application** using a **Client-Server Architecture** and focuses on efficiency, usability, and scalability for future web-based and mobile functionality.  
 
 ---
 
