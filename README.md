@@ -70,6 +70,14 @@ This system is developed as a **Full Stack Application** using a **Client-Server
 
 ---
 
+## 📹 Demo Video
+
+[![Watch the demo](https://img.youtube.com/vi/n6XrWfO8v2I/0.jpg)](https://www.youtube.com/watch?v=n6XrWfO8v2I)
+
+[watch on YouTube](https://www.youtube.com/watch?v=n6XrWfO8v2I)
+
+---
+
 👥 Authors
 This project is developed by:
 
